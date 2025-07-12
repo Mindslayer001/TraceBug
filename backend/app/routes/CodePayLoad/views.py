@@ -1,3 +1,4 @@
+import ast
 from http.client import HTTPException
 import traceback
 from app.utils.riskAnalyzer import RiskAnalyzer
@@ -7,18 +8,22 @@ from .schemas import CodePayLoadIn, CodePayLoadOut
 
 router = APIRouter()
 
+def getAst(code:str):
+    try:
+        parse_tree = ast.parse(code)
+        return ast.dump(parse_tree, indent=4)
+    except SyntaxError as e:
+        raise HTTPException(status_code=400, detail=f"Syntax error in code: {e}")
+
 @router.post("/", response_model=CodePayLoadOut) 
 async def receive_snippet(payload: CodePayLoadIn):
     try:
         analyzer = RiskAnalyzer(payload.code)
         risks = analyzer.flatten_risks()
-        response = "No risks found in the provided code snippet."
-        # Check if all check results are empty
         if risks == []:
-            response = debug_code(payload.code)
-
-        # Pass full risks dictionary to debug_code (if expected)
-        response = debug_code(risks)
+            response = debug_code(getAst(payload.code),payload.code)
+        else:
+            response = debug_code(risks)
         
         # In case response is a list, join it
         if isinstance(response, list):

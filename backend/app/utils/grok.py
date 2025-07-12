@@ -136,10 +136,10 @@ data = request.GET['id']
 
 
 
-def debug_code(code_snippet:str):
+def debug_code(code_ast:str, original_code:str):
     prompt = f"""the code contains this risky snippet:
 ```python
-{code_snippet}
+{code_ast}
 ```
 Please:
 
@@ -202,7 +202,6 @@ Example Response
 # Corrected Code:
 # from ast import literal_eval
 # user_data = literal_eval(user_input) 
-eval(user_input)
 ```
 
 Example Input - 2
@@ -226,10 +225,9 @@ Example Response
 ### Corrected Code:
 # Use .get() with a default value or handle missing keys gracefully
 # data = request.GET.get('id', None)
-data = request.GET['id']
 ```
                 """
-    response = query_gpt(prompt)
+    response = query_gpt(prompt)+f"```python\n{original_code}\n```"
     print(response)
     if response:
         return response

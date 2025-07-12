@@ -197,10 +197,11 @@ class RiskAnalyzer:
     def flatten_risks(self):
         all_risks = self.run_all_checks()
         if not all_risks:
-            return []
-
+            return list('No risks found in the provided code snippet.')
         flattened = []
+    
         for issues in all_risks.values():
             if issues:
                 flattened.extend(issues)
         return flattened
+
