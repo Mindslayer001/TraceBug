@@ -1,20 +1,49 @@
 from platform import node
 from fastapi import APIRouter
+from app.utils.grok import debug_code
 from .schemas import CodePayLoadIn,CodePayLoadOut
 import ast
 
 router = APIRouter()
 
+# -------------- AST Analyzers --------------
+# This module analyzes Python code for potential risks using the Abstract Syntax Tree (AST) module.
+class RiskAnalyzer:
+    def __init__(self, code):
+        self.code = code
+        self.tree = ast.parse(code)
+
+    def find_division_risks(self):
+        risky_lines = []
+        # This method looks for division operations that could lead to runtime errors (e.g., division by zero).
+        # It returns a list of tuples containing the line number and the code segment.
+        # It uses ast.walk to traverse the AST and identify division operations.
+        # If a division operation is found, it captures the line number and the source code segment
+        # using ast.get_source_segment or ast.unparse.
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
+                segment = ast.get_source_segment(self.code, node) or ast.unparse(node)
+                risky_lines.append((node.lineno, segment))
+        return risky_lines
+
+    def find_eval_usage(self):
+        risky_lines = []
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "eval":
+                segment = ast.get_source_segment(self.code, node) or ast.unparse(node)
+                risky_lines.append((node.lineno, segment))
+        return risky_lines
+    
+
+
 @router.post("/", response_model=CodePayLoadOut) 
 async def receive_snippet(payload: CodePayLoadIn):
-    getAst(payload.code)
-    return {"code": payload.code, "length": len(payload.code)}
+    analyzer = RiskAnalyzer(payload.code)
+    risks = analyzer.find_division_risks() + analyzer.find_eval_usage()
+    if not risks:
+        return {"code": payload.code, "length": len(payload.code), "message": "No obvious risks found via AST."}
+    response = debug_code(risks)
+    return {"code": payload.code, "length": len(payload.code), "message": response}
 
-
-def getAst(code: str):
-    node = ast.parse(code)
-    print("AST of the dumped code:")
-    print(ast.dump(node, indent=4))
-    return ast.dump(node)
 
 
