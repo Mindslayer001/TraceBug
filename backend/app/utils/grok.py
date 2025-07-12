@@ -44,40 +44,70 @@ Please:
 
     Highlight any edge cases, assumptions, or test scenarios that should be considered when using or refactoring this snippet.
 
-    Keep the explanation concise and beginner-friendly where possible, but technically accurate.
+    Keep the explanation concise where possible, but technically accurate.
 
     This is not one of those "AI generated code" prompts, so please do not mention that.
 
     This is not a code generation prompt, so please do not generate any code that is not directly related to the snippet.
+    
+    Only use code blocks for code snippets, and do not use any other formatting.
 
-    Strictly focus on generating a markdown-formatted response that addresses all the points mentioned.
+    Only using `triple backticks` for code blocks, and do not use single backticks or any other formatting.
 
-EExample Input
+    Never repeat the prompt or any part of it in your response.
+
+    Never generate any line longer than 80 characters. If there is a line longer than 80 characters, break it into multiple lines.
+
+    Strictly follow the format below:
+
+Example Input - 1 
 
 Line 42 contains this snippet:
 
 eval(user_input)
 
 Example Response
-'''
-# Issue Level: High 
-
-# Risk Explanation:
-Using `eval()` on untrusted user input is highly dangerous. It allows execution of arbitrary Python code, which may lead to security breaches, data loss, or remote code execution. Even seemingly benign input can exploit system access or leak sensitive data.
 ```python
--> Edge Cases & Test Scenarios:
-    - Input is a valid literal (e.g., '123', '[1, 2, 3]') → should succeed.
-    - Input is invalid (e.g., 'os.system("rm -rf /")') → should raise an error or be blocked.
-    - Input is a malicious payload disguised as data → verify safe parsing.
-    - Always test with strict input validation if literal_eval is not feasible.
--> Best Alternatives
-    - Safe alternative using literal_eval to avoid executing arbitrary code
-'''
-
+# Issue Level: High
+# Risk Explanation:
+# Using 'eval()' on untrusted user input is highly dangerous. It allows execution of arbitrary Python code, which 
+# may lead to security breaches, data loss, or remote code execution. Even seemingly benign input can exploit 
+# system access or leak sensitive data.
+# -> Edge Cases & Test Scenarios:
+#     - Input is a valid literal (e.g., '123', '[1, 2, 3]') → should succeed.
+#     - Input is invalid (e.g., 'os.system("rm -rf /")') → should raise an error or be blocked.
+#     - Input is a malicious payload disguised as data → verify safe parsing.
+#     - Always test with strict input validation if literal_eval is not feasible.
+# -> Best Alternatives
+#     - Safe alternative using literal_eval to avoid executing arbitrary code
 # Corrected Code:
 # from ast import literal_eval
 # user_data = literal_eval(user_input) 
 eval(user_input)
+```
+
+Example Input - 2
+
+Line 18 contains this snippet:
+
+data = request.GET['id']
+
+Example Response
+```python
+# Issue Level: Medium
+# Risk Explanation:
+# Directly accessing a query parameter using 'request.GET['id']' can raise a 'KeyError' if the 'id' parameter is 
+# missing from the request. This can crash the application or expose an unhandled exception to users. It also 
+# lacks basic input validation or fallback behavior.
+# -> Edge Cases & Test Scenarios:
+#     - URL contains ?id=123 → code should work correctly.
+#     - URL does not contain id → original snippet throws KeyError; fix prevents this.
+#     - URL contains ?id= (empty value) → test if empty strings are valid inputs or should be rejected.
+#     - Input is a non-numeric or unexpected string → validate format if id is expected to be an integer.
+### Corrected Code:
+# Use .get() with a default value or handle missing keys gracefully
+# data = request.GET.get('id', None)
+data = request.GET['id']
 ```
                 """
         print(f"\n🔍 Analyzing line {lineno}...")
