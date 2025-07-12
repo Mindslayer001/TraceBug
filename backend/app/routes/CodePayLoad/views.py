@@ -1,4 +1,6 @@
+from http.client import HTTPException
 from platform import node
+import traceback
 from fastapi import APIRouter
 from app.utils.grok import debug_code
 from .schemas import CodePayLoadIn,CodePayLoadOut
@@ -38,11 +40,23 @@ class RiskAnalyzer:
 
 @router.post("/", response_model=CodePayLoadOut) 
 async def receive_snippet(payload: CodePayLoadIn):
-    analyzer = RiskAnalyzer(payload.code)
-    risks = analyzer.find_division_risks() + analyzer.find_eval_usage()
-    if not risks:
-        return {"code": payload.code, "length": len(payload.code), "message": "No obvious risks found via AST."}
-    response = debug_code(risks)
+    try:
+        analyzer = RiskAnalyzer(payload.code)
+        risks = analyzer.find_division_risks() + analyzer.find_eval_usage()
+        if not risks:
+            return {"code": payload.code, "length": len(payload.code), "message": "No obvious risks found via AST."}
+        response = debug_code(risks)
+        response = "\n".join(response) if isinstance(response, list) else response
+    except ValueError as ve:
+        print("🔥 ValueError in /snippets/:", ve)
+        traceback.print_exc()
+        raise HTTPException(status_code=400, detail=str(ve))
+        return {"code": payload.code, "length": len(payload.code), "message": f"Error analyzing code: {str(ve)}"}
+    except Exception as e:
+        print("🔥 Error in /snippets/:", e)
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+        return {"code": payload.code, "length": len(payload.code), "message": f"Error analyzing code: {str(e)}"}
     return {"code": payload.code, "length": len(payload.code), "message": response}
 
 
