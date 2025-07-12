@@ -1,0 +1,41 @@
+.DS_Store
+*.log
+*.py[cod]
+__pycache__/
+.env
+.env.*
+
+# ===== Python (Poetry + FastAPI backend) =====
+# Inside backend/
+backend/.venv/
+**/__pycache__/
+**/build/
+**/dist/
+**/*.egg-info/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.coverage
+**/.ruff_cache/
+
+# ===== Poetry-specific =====
+backend/poetry.lock
+
+# If you use poetry with virtualenvs inside the project:
+**/.venv/
+
+# ===== React (frontend) =====
+# Inside frontend/
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/.env.*.local
+frontend/npm-debug.log
+frontend/yarn-debug.log
+frontend/yarn-error.log
+
+# ===== Editor / OS junk =====
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
