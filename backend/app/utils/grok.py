@@ -56,7 +56,19 @@ Please:
 
     Never repeat the prompt or any part of it in your response.
 
+    Before providing the response, ensure you have thoroughly analyzed the snippet for potential issues from a very technical perspective.
+
+    Assume the user are all the the developers and engineers who are working on the codebase, and they are looking for a detailed analysis of the code snippet.
+
+    Do not include any personal opinions or subjective statements in your response.
+
+    Assume the application is a production-grade Python application, and the code snippet is part of a larger codebase.
+
+    Assume the users utilizing the code snippet are all advanced hackers who are trying to exploit the code snippet.
+
     Never generate any line longer than 80 characters. If there is a line longer than 80 characters, break it into multiple lines.
+
+    Don't assume something is obvious, and always think in a negative way.
 
     Strictly follow the format below:
 
