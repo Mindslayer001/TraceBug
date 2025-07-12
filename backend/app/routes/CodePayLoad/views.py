@@ -13,7 +13,15 @@ router = APIRouter()
 class RiskAnalyzer:
     def __init__(self, code):
         self.code = code
+        self.lines = code.splitlines()
         self.tree = ast.parse(code)
+        print(self.tree)
+    
+    
+    def get_full_line(self, lineno):
+        if 1 <= lineno <= len(self.lines):
+            return self.lines[lineno - 1].strip()
+        return ""
 
     def find_division_risks(self):
         risky_lines = []
@@ -24,16 +32,16 @@ class RiskAnalyzer:
         # using ast.get_source_segment or ast.unparse.
         for node in ast.walk(self.tree):
             if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
-                segment = ast.get_source_segment(self.code, node) or ast.unparse(node)
-                risky_lines.append((node.lineno, segment))
+                full_line = self.get_full_line(node.lineno)
+                risky_lines.append((node.lineno, full_line))
         return risky_lines
 
     def find_eval_usage(self):
         risky_lines = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "eval":
-                segment = ast.get_source_segment(self.code, node) or ast.unparse(node)
-                risky_lines.append((node.lineno, segment))
+                full_line = self.get_full_line(node.lineno)
+                risky_lines.append((node.lineno, full_line))
         return risky_lines
     
 
@@ -46,14 +54,17 @@ async def receive_snippet(payload: CodePayLoadIn):
         if not risks:
             return {"code": payload.code, "length": len(payload.code), "message": "No obvious risks found via AST."}
         response = debug_code(risks)
+        
+        # response = ast.dump(ast.parse(payload.code), indent=4)
+        # print("AST Dump:\n", response)
         response = "\n".join(response) if isinstance(response, list) else response
     except ValueError as ve:
-        print("🔥 ValueError in /snippets/:", ve)
+        print("ValueError in /snippets/:", ve)
         traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(ve))
         return {"code": payload.code, "length": len(payload.code), "message": f"Error analyzing code: {str(ve)}"}
     except Exception as e:
-        print("🔥 Error in /snippets/:", e)
+        print("Error in /snippets/:", e)
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
         return {"code": payload.code, "length": len(payload.code), "message": f"Error analyzing code: {str(e)}"}
