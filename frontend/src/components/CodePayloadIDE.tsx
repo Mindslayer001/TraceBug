@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import CodeBlock from './CodeBlock'; // Assuming CodeBlock is in the same directory
 import './CodePayloadIDE.css';
 
 const API_URL = 'http://127.0.0.1:8000/snippets'; // Adjust if your backend is on a different port
@@ -32,6 +33,7 @@ const CodePayloadIDE: React.FC = () => {
       <div className="editor-pane">
         <h2>Code Editor</h2>
         <textarea
+          style={{ color: 'black' }}
           value={code}
           onChange={e => setCode(e.target.value)}
           rows={20}
@@ -47,7 +49,13 @@ const CodePayloadIDE: React.FC = () => {
         {response ? (
           <>
             <div style={{ color: 'black' }}><strong style={{ color: 'black' }}>Length:</strong> {response.length}</div>
-            <div style={{ color: 'black' }}><ReactMarkdown>{response.message}</ReactMarkdown></div>
+            <div style={{ color: 'black' }}>
+              <ReactMarkdown
+                components={{
+                  code: CodeBlock
+                }}
+              >{response.message}</ReactMarkdown>
+            </div>
           </>
         ) : (
           <div>No response yet.</div>
