@@ -118,7 +118,7 @@ function App() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
-          <p>&copy; 2025 TraceBug. Built with React & TypeScript. <a href="https://github.com/Mindslayer001" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+          <p>&copy; 2025 TraceBug. Built with React & TypeScript. <a style={{ color: '#61dafb' }} href="https://github.com/Mindslayer001" target="_blank" rel="noopener noreferrer">GitHub</a></p>
         </div>
       </footer>
     </div>
