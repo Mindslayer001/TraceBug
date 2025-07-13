@@ -7,7 +7,7 @@ const CodeSender = () => {
 
   const sendCode = async () => {
     try {
-      const res = await fetch('http://localhost:8000/snippets/', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/snippets/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ const CodeSender = () => {
   useEffect(() => {
     const fetchHealth = async () => {
     try {
-      const res = await fetch('http://localhost:8000/health/');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/health/`);
       const data = await res.json();
       setHealth(JSON.stringify(data, null, 2));
       console.log(health)
