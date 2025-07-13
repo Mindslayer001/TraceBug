@@ -1,4 +1,3 @@
-import React from 'react';
 import CodePayloadIDE from './components/CodePayloadIDE';
 import './App.css';
 
