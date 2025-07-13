@@ -1,25 +1,29 @@
 .leetcode-layout {
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  max-height: 100vh;
+  height: 100%;
+  width: 100vw;
+  min-height: 600px;
   gap: 2rem;
   box-sizing: border-box;
   padding: 2rem;
-  background: #f4f6fa;
+  background: #1e293b;
   overflow: hidden;
+  margin-left: calc(-2rem);
+  margin-right: calc(-2rem);
 }
 .editor-pane, .response-pane {
   flex: 1;
-  background: #fff;
+  background: #0f172a;
   border-radius: 12px;
   padding: 2rem 1.5rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
   display: flex;
   flex-direction: column;
   min-width: 0;
   overflow: auto;
   max-height: 90vh;
+  color: #e0e7ef;
 }
 .editor-pane {
   margin-right: 1rem;
@@ -31,7 +35,7 @@
 textarea {
   font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace;
   font-size: 1rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #334155;
   border-radius: 6px;
   padding: 0.75rem;
   margin-bottom: 1rem;
@@ -40,14 +44,15 @@ textarea {
   min-height: 300px;
   max-height: 50vh;
   box-sizing: border-box;
-  background: #f9fafb;
+  background: #1e293b;
+  color: #e0e7ef;
   overflow: auto;
 }
 button {
   align-self: flex-start;
   padding: 0.5rem 1.5rem;
-  background: #0074d9;
-  color: white;
+  background: #2563eb;
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -56,7 +61,7 @@ button {
   margin-top: 0.5rem;
 }
 button:disabled {
-  background: #aaa;
+  background: #334155;
   cursor: not-allowed;
 }
 h2 {
@@ -64,7 +69,7 @@ h2 {
   margin-bottom: 1rem;
   font-size: 1.4rem;
   font-weight: 600;
-  color: #222;
+  color: #60a5fa;
 }
 @media (max-width: 900px) {
   .leetcode-layout {

@@ -33,7 +33,7 @@ const CodePayloadIDE: React.FC = () => {
       <div className="editor-pane">
         <h2>Code Editor</h2>
         <textarea
-          style={{ color: 'black' }}
+          style={{ color: 'grey' }}
           value={code}
           onChange={e => setCode(e.target.value)}
           rows={20}
@@ -48,11 +48,20 @@ const CodePayloadIDE: React.FC = () => {
         <h2>Response</h2>
         {response ? (
           <>
-            <div style={{ color: 'black' }}><strong style={{ color: 'black' }}>Length:</strong> {response.length}</div>
-            <div style={{ color: 'black' }}>
+            <div style={{ color: 'white' }}><strong style={{ color: 'white' }}>Length:</strong> {response.length}</div>
+            <div style={{ color: 'white' }}>
               <ReactMarkdown
                 components={{
-                  code: CodeBlock
+                  code({className, children, ...props}) {
+                    return (
+                      <CodeBlock
+                        className={className}
+                        {...props}
+                      >
+                        {children}
+                      </CodeBlock>
+                    );
+                  }
                 }}
               >{response.message}</ReactMarkdown>
             </div>

@@ -1,6 +1,7 @@
 # 🔍 TraceBug - fix bugs before they bite.
 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+
 ![License](https://img.shields.io/github/license/yourusername/ast-llm-analyzer)
 
 ![Python](https://img.shields.io/badge/python-3.11-blue)
@@ -8,6 +9,7 @@
 ![Node](https://img.shields.io/badge/node-20.x-brightgreen)
 
 ![Frontend](https://img.shields.io/badge/frontend-Vite+React-blueviolet)
+
 ![Backend](https://img.shields.io/badge/backend-FastAPI-orange)
 
 > AI-powered risk analyzer using Python AST + LLMs. Intelligently finds, annotates, and corrects risky code by analyzing AST and feeding it to an LLM for judgment.
