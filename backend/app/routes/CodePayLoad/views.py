@@ -3,7 +3,7 @@ from http.client import HTTPException
 import traceback
 from app.utils.riskAnalyzer import RiskAnalyzer
 from fastapi import APIRouter
-from app.utils.grok import debug_code
+from app.utils.grok import debug_code,debug_issues
 from .schemas import CodePayLoadIn, CodePayLoadOut
 
 router = APIRouter()
@@ -21,9 +21,9 @@ async def receive_snippet(payload: CodePayLoadIn):
         analyzer = RiskAnalyzer(payload.code)
         risks = analyzer.flatten_risks()
         if risks == []:
-            response = debug_code(getAst(payload.code),payload.code)
+            response = debug_code(payload.code,getAst(payload.code))
         else:
-            response = debug_code(risks)
+            response = debug_issues(risks)
         
         # In case response is a list, join it
         if isinstance(response, list):

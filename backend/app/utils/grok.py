@@ -26,7 +26,7 @@ def query_gpt(prompt):
     return response.choices[0].message.content.strip()
 
 # -------------- Main Debugging Logic --------------
-def debug_code(risks: list):
+def debug_issues(risks: list):
     result = []
     for lineno, snippet in risks:
         prompt = f"""
@@ -136,7 +136,7 @@ data = request.GET['id']
 
 
 
-def debug_code(code_ast:str, original_code:str):
+def debug_code(original_code:str,code_ast:str):
     prompt = f"""the code contains this risky snippet:
 ```python
 {code_ast}
