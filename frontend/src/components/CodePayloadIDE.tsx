@@ -3,8 +3,6 @@ import ReactMarkdown from 'react-markdown';
 import CodeBlock from './CodeBlock'; // Assuming CodeBlock is in the same directory
 import './CodePayloadIDE.css';
 
-const API_URL = 'http://127.0.0.1:8000/snippets'; // Adjust if your backend is on a different port
-
 const CodePayloadIDE: React.FC = () => {
   const [code, setCode] = useState('');
   const [response, setResponse] = useState<{ code: string; length: number; message: string } | null>(null);
@@ -13,7 +11,7 @@ const CodePayloadIDE: React.FC = () => {
   const handleSend = async () => {
     setLoading(true);
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/snippets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
