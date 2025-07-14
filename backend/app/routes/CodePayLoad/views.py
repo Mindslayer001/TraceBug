@@ -3,7 +3,7 @@ from http.client import HTTPException
 import traceback
 from app.utils.riskAnalyzer import RiskAnalyzer
 from fastapi import APIRouter
-from app.utils.grok import debug_code,debug_issues
+from app.utils.togetheAI import debug_code,debug_issues
 from .schemas import CodePayLoadIn, CodePayLoadOut
 
 router = APIRouter()
