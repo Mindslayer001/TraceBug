@@ -1,178 +1,164 @@
-# 🔍 TraceBug - fix bugs before they bite.
+# TraceBug: AI-Powered Code Risk Analyzer
 
-![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Build](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Python](https://img.shields.io/badge/python-3.11-blue) ![Node](https://img.shields.io/badge/node-20.x-brightgreen) ![Frontend](https://img.shields.io/badge/frontend-Vite+React-blueviolet) ![Backend](https://img.shields.io/badge/backend-FastAPI-orange)
 
-![License](https://img.shields.io/github/license/yourusername/ast-llm-analyzer)
-
-![Python](https://img.shields.io/badge/python-3.11-blue)
-
-![Node](https://img.shields.io/badge/node-20.x-brightgreen)
-
-![Frontend](https://img.shields.io/badge/frontend-Vite+React-blueviolet)
-
-![Backend](https://img.shields.io/badge/backend-FastAPI-orange)
-
-> AI-powered risk analyzer using Python AST + LLMs. Intelligently finds, annotates, and corrects risky code by analyzing AST and feeding it to an LLM for judgment.
-
----
+**TraceBug** is an intelligent static analysis tool that detects and fixes risky code patterns in Python. It combines traditional Abstract Syntax Tree (AST) analysis with the advanced reasoning capabilities of Large Language Models (LLMs) to provide deep, context-aware code reviews.
 
 ## 🚀 Overview
 
-> TraceBug is an AI-powered static analyzer for Python that detects and fixes risky patterns using AST and LLMs—currently focused on unit-level code, with future plans to support integration-level analysis..
+This tool automates the code review process by:
 
-This project automatically:
-- Parses Python code using AST
-- Identifies patterns with potential risks
-- Sends these AST structures to an LLM (like GPT)
-- Receives structured risk-level feedback and corrections
-- Serves results through a web UI
+1. **Pre-analysis with AST:** First, it parses the input Python code into an Abstract Syntax Tree (AST). It then traverses this tree to find a wide range of predefined potential risks, from security vulnerabilities to runtime errors and bad practices.
+2. **Targeted LLM Judgment:** If specific risks are identified, the relevant code snippets are sent to a Large Language Model (Groq Llama 3). A detailed prompt asks the LLM to act as a senior engineer, providing a severity level, a clear explanation of the vulnerability, and a production-safe code correction.
+3. **General LLM Fallback:** If the initial AST scan finds no specific issues, the entire code's AST is sent to the LLM for a more general, holistic review.
+4. **Interactive Frontend:** Results are displayed in a clean, developer-friendly web UI, with markdown rendering, syntax highlighting, and copy-to-clipboard functionality.
 
-🔒 Security-focused.  
-> Built with secure defaults and extensible risk rules, TraceBug can evolve into an LLM-powered **DevSecOps tool**.
+TraceBug is built to be a security-focused, extensible, and user-friendly DevSecOps tool.
 
-🧠 LLM-enhanced.  
-🎨 Developer-friendly UX.
+## ✨ Features
 
----
-
-## 🧠 Features
-
-- ✅ Python AST parsing
-- ✅ Risk-level classification (High / Medium / Low)
-- ✅ LLM integration for code understanding
-- ✅ Suggests safer alternatives & corrections
-- ✅ React frontend for code input and review
-- ✅ FastAPI backend API with modular structure
-- ✅ Handles edge cases like race conditions, TOCTOU bugs, file I/O risks, etc.
-
----
+- **Comprehensive AST-based Risk Detection:**
+	  - **Security:** Detects `eval()` usage, command injection (`shell=True`), dangerous imports (`os`, `pickle`), hardcoded secrets, and potential SQL injection.
+	  - **Runtime Errors:** Finds division-by-zero risks, variable unpacking mismatches, and usage of undefined variables.
+	  - **Bad Practices:** Identifies broad or empty `except` clauses, built-in name shadowing, infinite loops, deep nesting, and more.
+- **LLM Integration:** Utilizes the Groq API (Llama 3 model) for intelligent code analysis and generation of human-like feedback.
+- **AI-Generated Explanations & Fixes:** Provides clear, actionable feedback including severity levels (High/Medium/Low), risk explanations, and corrected code snippets.
+- **Interactive Web UI:** A modern frontend built with React, TypeScript, and Vite, featuring a code editor, file uploads, and a formatted results view.
+- **Modular Backend:** A robust backend powered by FastAPI, ensuring high performance and easy extensibility.
 
 ## 🏗️ Project Structure
 
 ```
 
 .  
-├── backend  
-│ ├── app  
-│ │ ├── core # Configurations  
-│ │ ├── routes # CodePayload and health API  
-│ │ ├── utils # AST parsing and risk analysis logic  
-│ │ └── main.py # FastAPI entrypoint  
-│ ├── poetry.lock / pyproject.toml  
-├── frontend  
-│ ├── components # React UI (Code sender, viewer)  
-│ ├── App.tsx # Root app  
-│ └── vite.config.ts # Vite + TypeScript setup
+├── backend/  
+│ ├── app/  
+│ │ ├── core/ # FastAPI configuration and settings  
+│ │ ├── routes/ # API endpoints (code analysis, health checks)  
+│ │ ├── utils/ # Core logic: AST parsing (riskAnalyzer.py) & LLM interaction (grok.py)  
+│ │ └── main.py # FastAPI application entrypoint  
+│ ├── pyproject.toml # Python dependencies  
+│ └── .env_example # Environment variable template  
+└── frontend/  
+├── src/  
+│ ├── components/ # React components (Code Editor, Results Display, etc.)  
+│ ├── App.tsx # Main application component  
+│ └── main.tsx # Application entrypoint  
+├── package.json # Node.js dependencies  
+└── vite.config.ts # Vite configuration
 
 ```
 
----
+## ⚙️ Setup and Installation
 
-## ⚙️ Setup Instructions
+### Prerequisites
 
-### 📦 Backend (Python 3.11 + FastAPI)
-
-```bash
-cd backend
-poetry install
-poetry shell
-uvicorn app.main:app --reload
-```
-
-> LLM API keys should be configured in `app/core/config.py` or via `.env`
-
-
-
-### 💻 Frontend (React + TypeScript + Vite)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-> React app runs at `http://localhost:5173`
+- **Node.js** (v20.x or later)
+- **Python** (v3.12 or later)
+- **Poetry** for Python package management
 
 ---
 
-## 🧪 Example Usage
+### 📦 Backend (FastAPI)
 
-1. Paste Python code in the IDE
+1. **Navigate to the backend directory:**
 
-2. Submit
+    ```bash
+        cd backend
+    ```
 
-3. View LLM-generated feedback:
+2. **Create and configure the environment file:**
+    - Copy the example `.env` file:
 
-	- Risk level (High / Medium / Low)
+    ```bash
+        cp .env_example .env
+    ```
 
-    - Vulnerability description
-    
-    - Suggested corrections
-    
+    - Open the `.env` file and add your Groq API key and the allowed CORS origin for the frontend:
 
----
+    ```bash
+        TOGETHER_API_KEY="your-together-api-key"
+        CORS_ORIGINS="http://localhost:5173"
+    ```
 
-## 🧠 How It Works
+3. **Install dependencies using Poetry:**
 
-1. **AST Parsing**
-    
-    - Code is parsed using `ast.parse()`
-    
-    - Transformed into an intermediate representation
-    
-2. **Risk Detection**
-    
-    - Patterns (e.g., `os.remove`, `try...except:`, `threading`, `open()` misuse) are matched
-        
-    - AST and code snippet sent to LLM with a prompt
-        
-3. **LLM Judgment**
-    
-    - Receives structured JSON:
-        
-        ```json
-        {
-          "line": 42,
-          "risk": "High",
-          "explanation": "...",
-          "fix": "use 'with open(...) as f'"
-        }
-        ```
-        
-4. **Frontend Display**
-    
-    - Highlights vulnerable lines
+    ```bash
+        poetry install
+    ```
 
-    
+4. **Activate the virtual environment and run the server:**
+
+    ```bash
+        poetry shell
+        uvicorn app.main:app --reload
+    ```
+
+The backend API will be running at `http://127.0.0.1:8000`.
 
 ---
+
+### 💻 Frontend (React + Vite)
+
+1. **Navigate to the frontend directory:**
+
+    ```bash
+        cd frontend
+    ```
+
+2. **Create the environment file:**
+    - Create a new file named `.env` in the `frontend/` directory.
+    - Add the following line to specify the backend API URL:
+
+    ```env
+        VITE_API_URL=http://127.0.0.1:8000
+    ```
+
+3. **Install dependencies using npm:**
+
+    ```bash
+        npm install
+    ```
+
+4. **Run the development server:**
+
+    ```bash
+        npm run dev
+    ```
+
+The frontend application will be available at `http://localhost:5173`.
+
+## 🚀 Usage
+
+1. Ensure both the backend and frontend servers are running.
+2. Open your web browser and navigate to `http://localhost:5173`.
+3. Paste your Python code into the editor on the left or use the "Upload File" button.
+4. Click the "Analyze Code" button.
+5. View the detailed, AI-generated analysis in the results panel on the right.
 
 ## 🧪 Tests
 
-_TBD: Add Pytest support for AST logic and React unit tests for components._
-
----
-
-## 🛡️ License
-
-MIT License. © 2025 Mani Sankar Chintagunti
-
----
+TBD: Pytest support for AST logic and React Testing Library tests for UI components are planned for future releases.
 
 ## 🤝 Contributing
 
-We welcome contributions, especially in:
+We welcome contributions! If you're interested in improving TraceBug, please consider:
 
-- 🧪 Adding more risk rule patterns
+- Adding new risk detection patterns to `riskAnalyzer.py`.
+- Enhancing the prompts in `grok.py` for better LLM responses.
+- Improving the frontend UI/UX.
+- Adding support for more programming languages.
 
-- 🌐 Enhancing multilingual code support
-
-- 🧠 Prompt engineering & LLM fine-tuning
-
-
----
+Feel free to open an issue or submit a pull request.
 
 ## 📬 Contact
 
-If you want to collaborate, reach out via [buildwithmani.dev@gmail.com](mailto:buildwithmani.dev@gmail.com) or open an issue.
+For collaboration or inquiries, please reach out via email at [buildwithmani.dev@gmail.com](mailto:buildwithmani.dev@gmail.com) or connect on [GitHub](https://github.com/Mindslayer001).
 
+## 🛡️ License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+© 2025 MindSlayer001
