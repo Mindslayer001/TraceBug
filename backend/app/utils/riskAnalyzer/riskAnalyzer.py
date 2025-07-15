@@ -24,7 +24,16 @@ class RiskAnalyzer:
         # Initialize with source code and parse it into AST
         self.code = code
         self.lines = code.splitlines()
-        self.tree = ast.parse(code)
+        
+        # Parse the code - let syntax errors bubble up to be handled by the caller
+        try:
+            self.tree = ast.parse(code)
+        except SyntaxError:
+            # Re-raise syntax errors to be handled by the calling code
+            raise
+        except Exception as e:
+            raise ValueError(f"Failed to parse code: {str(e)}")
+            
         self.defined_names = set()
         self.used_names = set()
 
@@ -295,7 +304,7 @@ class RiskAnalyzer:
         # Flattens all issues into a single list of (line number, code) tuples
         all_risks = self.run_all_checks()
         if not all_risks:
-            return list('No risks found in the provided code snippet.')
+            return []
         flattened = {}
         for issues in all_risks.values():
             if issues:
