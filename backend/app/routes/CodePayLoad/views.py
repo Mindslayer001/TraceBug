@@ -1,27 +1,28 @@
 import ast
-from http.client import HTTPException
 import traceback
-from app.utils.riskAnalyzer import RiskAnalyzer
-from fastapi import APIRouter
-from app.utils.togetherAI import debug_code,debug_issues
+from app.utils.riskAnalyzer.riskAnalyzer import RiskAnalyzer
+from fastapi import APIRouter,HTTPException
+from app.utils.mistralAI import debug_code,debug_issues
 from .schemas import CodePayLoadIn, CodePayLoadOut
 
 router = APIRouter()
 
-def getAst(code:str):
+def ValidateAST(code:str):
     try:
         parse_tree = ast.parse(code)
         return ast.dump(parse_tree, indent=4)
-    except SyntaxError as e:
+    except Exception as e:
         raise HTTPException(status_code=400, detail=f"Syntax error in code: {e}")
 
 @router.post("/", response_model=CodePayLoadOut) 
 async def receive_snippet(payload: CodePayLoadIn):
     try:
+        # Validate the AST of the code
+        code_ast = ValidateAST(payload.code)
         analyzer = RiskAnalyzer(payload.code)
         risks = analyzer.flatten_risks()
         if risks == []:
-            response = debug_code(payload.code,getAst(payload.code))
+            response = debug_code(payload.code, payload.code)
         else:
             response = debug_issues(risks)
         
